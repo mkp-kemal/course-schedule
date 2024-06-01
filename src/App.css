@@ -142,3 +142,7 @@ main {
     text-align: left;
   }
   
+  .student-schedule-table .conflict {
+    background-color: #f8d7da;
+  }
+  

@@ -12,7 +12,7 @@ const ScheduleTable = ({ initialSchedule }) => {
   useEffect(() => {
     const updatedSchedule = checkConflicts(schedule);
     setSchedule(updatedSchedule);
-  }, [schedule]);
+  }, []);
 
   const handleOptimizeSchedule = () => {
     const optimizedSchedule = simulatedAnnealing(schedule, 1000, 0.995);
