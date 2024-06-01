@@ -49,3 +49,28 @@ export function checkConflicts(schedule) {
         conflict: conflicts.has(entry),
     }));
 }
+
+// src/utils/checkConflicts.js
+
+export const checkClassConflicts = (schedule, selectedClass) => {
+    const updatedSchedule = schedule.map(entry => ({ ...entry, conflict: false }));
+    const classSchedule = updatedSchedule.filter(entry => entry.class === selectedClass);
+  
+    for (let i = 0; i < classSchedule.length; i++) {
+      for (let j = i + 1; j < classSchedule.length; j++) {
+        if (
+          classSchedule[i].day === classSchedule[j].day &&
+          (
+            (classSchedule[i].startTime < classSchedule[j].endTime && classSchedule[i].endTime > classSchedule[j].startTime) ||
+            (classSchedule[j].startTime < classSchedule[i].endTime && classSchedule[j].endTime > classSchedule[i].startTime)
+          )
+        ) {
+          classSchedule[i].conflict = true;
+          classSchedule[j].conflict = true;
+        }
+      }
+    }
+  
+    return updatedSchedule;
+  };
+  
