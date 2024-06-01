@@ -1,0 +1,144 @@
+:root {
+    --primary-color: #3498db;
+    /* Biru utama */
+    --primary-color-gradient: linear-gradient(135deg, #3498db, #5dade2);
+    /* Gradien biru ke putih */
+    --secondary-color: #2ecc71;
+    /* Hijau sekunder */
+    --accent-color: #e74c3c;
+    /* Warna aksen merah */
+    --background-color: #ecf0f1;
+    /* Warna latar belakang */
+    --text-color: #ffffff;
+    /* Warna teks utama */
+    --muted-text-color: #95a5a6;
+    /* Warna teks redup */
+    --border-color: #dcdcdc;
+    /* Warna border */
+    --highlight-color: #f1c40f;
+    /* Warna sorotan kuning */
+
+    --font-family: 'Arial, sans-serif';
+    /* Font utama */
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.main-content {
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem;
+}
+
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin: 1rem 0;
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    flex: 1;
+    padding: 1rem;
+}
+
+.schedule-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.schedule-table th,
+.schedule-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.add-schedule-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-schedule-form label {
+    margin: 0.5rem 0;
+}
+
+.add-schedule-form button {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.schedule-table .conflict {
+    background-color: #ffcccc;
+}
+
+/* src/styles/ScheduleTable.css */
+
+.schedule-table {
+    margin: 20px;
+  }
+  
+  .schedule-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .schedule-table th, .schedule-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .schedule-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+  
+  .conflict {
+    background-color: #f8d7da;
+  }
+  
+  .student-schedule-table {
+    margin-top: 20px;
+  }
+  
+  .student-schedule-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .student-schedule-table th, .student-schedule-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .student-schedule-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+  

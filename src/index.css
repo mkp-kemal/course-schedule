@@ -1,0 +1,29 @@
+:root {
+  --primary-color: #3498db;
+  /* Biru utama */
+  --primary-color-gradient: linear-gradient(135deg, #3498db, #5dade2);
+  /* Gradien biru ke putih */
+  --secondary-color: #2ecc71;
+  /* Hijau sekunder */
+  --accent-color: #e74c3c;
+  /* Warna aksen merah */
+  --background-color: #ecf0f1;
+  /* Warna latar belakang */
+  --text-color: #ffffff;
+  /* Warna teks utama */
+  --muted-text-color: #95a5a6;
+  /* Warna teks redup */
+  --border-color: #dcdcdc;
+  /* Warna border */
+  --highlight-color: #f1c40f;
+  /* Warna sorotan kuning */
+
+  --font-family: 'Arial, sans-serif';
+  /* Font utama */
+}
+
+body {
+  background: var(--primary-color-gradient);
+  font-family: var(--font-family);
+  color: var(--text-color);
+}
