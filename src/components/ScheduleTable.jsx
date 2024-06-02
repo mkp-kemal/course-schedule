@@ -1,10 +1,11 @@
 // src/components/ScheduleTable.jsx
 
 import { useState, useEffect } from 'react';
-import { Button, Table, Select } from 'antd';
+import { Button, Table, Select, Upload } from 'antd';
 import { simulatedAnnealing } from '../algorithms/simulatedAnnealing';
 import { checkConflicts } from '../utils/checkConflicts';
 import StudentScheduleTable from './StudentScheduleTable';
+import * as XLSX from 'xlsx'
 
 const { Option } = Select;
 
@@ -15,7 +16,7 @@ const ScheduleTable = ({ initialSchedule }) => {
   useEffect(() => {
     const updatedSchedule = checkConflicts(schedule);
     setSchedule(updatedSchedule);
-  }, [schedule]);
+  }, []);
 
   const handleOptimizeSchedule = () => {
     const optimizedSchedule = simulatedAnnealing(schedule, 1000, 0.995);
@@ -31,8 +32,55 @@ const ScheduleTable = ({ initialSchedule }) => {
     setSchedule(updatedSchedule);
   };
 
+
   const handleClassChange = (value) => {
     setSelectedClass(value);
+  };
+
+  const formatTime = (time) => {
+    // Membagi waktu menjadi jam dan menit
+    const [hour, minute] = time.toString().split('.');
+    // Menambahkan nol di depan angka jika hanya satu digit
+    const formattedHour = ("0" + hour).slice(-2);
+    const formattedMinute = minute ? (minute + "0").slice(0, 2) : '00'; // Menggunakan nol jika menit tidak ada
+    return `${formattedHour}:${formattedMinute}`;
+  };
+
+  const uploadProps = {
+    name: 'file',
+    accept: '.xlsx',
+    showUploadList: false,
+    beforeUpload: file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        parseExcelData(e.target.result);
+      };
+      reader.readAsArrayBuffer(file);
+      return false;
+    },
+  };
+
+  const parseExcelData = (excelData) => {
+    const workbook = XLSX.read(excelData, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    // Format data sesuai dengan struktur schedule
+    const parsedSchedule = data.slice(1).map(row => ({
+      day: row[0],
+      startTime: formatTime(row[1]),
+      endTime: formatTime(row[1]) * formatTime(row[7]),
+      course: row[3],
+      lecturer: row[4],
+      room: row[5],
+      class: row[6],
+      sks: row[7],
+    }));
+
+    // Perbarui state schedule dengan data yang diurai
+    setSchedule(parsedSchedule);
+    console.log(parsedSchedule);
   };
 
   const columns = [
@@ -107,6 +155,12 @@ const ScheduleTable = ({ initialSchedule }) => {
     <div className="schedule-table">
       <h3>Jadwal Pembelajaran</h3>
       <div style={{ marginBottom: '16px' }}>
+        {/* Tombol untuk mengunggah data Excel */}
+        <Upload {...uploadProps}>
+          <Button>
+            Unggah Jadwal Excel
+          </Button>
+        </Upload>
         <Button onClick={handleOptimizeSchedule} type="primary" style={{ marginRight: '8px' }}>Optimalkan Seluruh Jadwal</Button>
         <Button onClick={handleOptimizeConflictedSchedule} type="default" style={{ marginRight: '8px' }}>Optimalkan Jadwal Bentrok</Button>
       </div>
