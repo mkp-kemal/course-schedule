@@ -1,5 +1,3 @@
-// src/algorithms/simulatedAnnealing.js
-
 const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 const timeSlots = [
     '08:00', '09:30', '11:00', '12:30',
@@ -9,6 +7,8 @@ const rooms = [
     'Ruang 101', 'Ruang 102', 'Ruang 103',
     'Ruang 104', 'Ruang 105', 'Ruang 106'
 ];
+
+
 
 function calculateEndTime(startTime, sks) {
     const [startHour, startMinutes] = startTime.split(':').map(Number);
@@ -29,7 +29,7 @@ function calculateConflict(schedule) {
     const usedSlots = {};
 
     schedule.forEach(entry => {
-        const key = `${entry.day}-${entry.room}`;
+        const key = `${entry.day}-${entry.room}-${entry.class}`;
         if (!usedSlots[key]) {
             usedSlots[key] = [];
         }
@@ -38,6 +38,31 @@ function calculateConflict(schedule) {
 
     for (const key in usedSlots) {
         const slots = usedSlots[key];
+        slots.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+        for (let i = 0; i < slots.length - 1; i++) {
+            const currentSlot = slots[i];
+            const nextSlot = slots[i + 1];
+            const currentEndTime = calculateEndTime(currentSlot.startTime, currentSlot.sks);
+            if (currentEndTime > nextSlot.startTime) {
+                conflictCount++;
+            }
+        }
+    }
+
+    // Check conflicts across different classes in the same room
+    const roomUsage = {};
+
+    schedule.forEach(entry => {
+        const key = `${entry.day}-${entry.room}`;
+        if (!roomUsage[key]) {
+            roomUsage[key] = [];
+        }
+        roomUsage[key].push(entry);
+    });
+
+    for (const key in roomUsage) {
+        const slots = roomUsage[key];
         slots.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
         for (let i = 0; i < slots.length - 1; i++) {
