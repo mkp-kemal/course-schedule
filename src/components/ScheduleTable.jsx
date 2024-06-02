@@ -1,9 +1,12 @@
 // src/components/ScheduleTable.jsx
 
 import { useState, useEffect } from 'react';
+import { Button, Table, Select } from 'antd';
 import { simulatedAnnealing } from '../algorithms/simulatedAnnealing';
 import { checkConflicts } from '../utils/checkConflicts';
 import StudentScheduleTable from './StudentScheduleTable';
+
+const { Option } = Select;
 
 const ScheduleTable = ({ initialSchedule }) => {
   const [schedule, setSchedule] = useState(initialSchedule);
@@ -12,7 +15,7 @@ const ScheduleTable = ({ initialSchedule }) => {
   useEffect(() => {
     const updatedSchedule = checkConflicts(schedule);
     setSchedule(updatedSchedule);
-  }, []);
+  }, [schedule]);
 
   const handleOptimizeSchedule = () => {
     const optimizedSchedule = simulatedAnnealing(schedule, 1000, 0.995);
@@ -28,52 +31,97 @@ const ScheduleTable = ({ initialSchedule }) => {
     setSchedule(updatedSchedule);
   };
 
-  const handleClassChange = (event) => {
-    setSelectedClass(event.target.value);
+  const handleClassChange = (value) => {
+    setSelectedClass(value);
   };
+
+  const columns = [
+    {
+      title: 'Hari',
+      dataIndex: 'day',
+      key: 'day',
+      filters: [
+        { text: 'Senin', value: 'Senin' },
+        { text: 'Selasa', value: 'Selasa' },
+        { text: 'Rabu', value: 'Rabu' },
+        { text: 'Kamis', value: 'Kamis' },
+        { text: 'Jumat', value: 'Jumat' },
+      ],
+      onFilter: (value, record) => record.day.includes(value),
+    },
+    {
+      title: 'Jam Mulai',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      sorter: (a, b) => a.startTime.localeCompare(b.startTime),
+    },
+    {
+      title: 'Jam Selesai',
+      dataIndex: 'endTime',
+      key: 'endTime',
+    },
+    {
+      title: 'Mata Kuliah',
+      dataIndex: 'course',
+      key: 'course',
+    },
+    {
+      title: 'Dosen',
+      dataIndex: 'lecturer',
+      key: 'lecturer',
+    },
+    {
+      title: 'Ruang',
+      dataIndex: 'room',
+      key: 'room',
+      filters: [
+        { text: 'Ruang 101', value: 'Ruang 101' },
+        { text: 'Ruang 102', value: 'Ruang 102' },
+        { text: 'Ruang 103', value: 'Ruang 103' },
+        { text: 'Ruang 104', value: 'Ruang 104' },
+        { text: 'Ruang 105', value: 'Ruang 105' },
+        { text: 'Ruang 106', value: 'Ruang 106' },
+      ],
+      onFilter: (value, record) => record.room.includes(value),
+    },
+    {
+      title: 'Kelas',
+      dataIndex: 'class',
+      key: 'class',
+      filters: [
+        { text: 'A', value: 'A' },
+        { text: 'B', value: 'B' },
+        { text: 'C', value: 'C' },
+        // Tambahkan filter kelas lainnya
+      ],
+      onFilter: (value, record) => record.class.includes(value),
+    },
+    {
+      title: 'SKS',
+      dataIndex: 'sks',
+      key: 'sks',
+    },
+  ];
 
   return (
     <div className="schedule-table">
       <h3>Jadwal Pembelajaran</h3>
-      <button onClick={handleOptimizeSchedule}>Optimalkan Seluruh Jadwal</button>
-      <button onClick={handleOptimizeConflictedSchedule}>Optimalkan Jadwal Bentrok</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Hari</th>
-            <th>Jam Mulai</th>
-            <th>Jam Selesai</th>
-            <th>Mata Kuliah</th>
-            <th>Dosen</th>
-            <th>Ruang</th>
-            <th>Kelas</th>
-            <th>SKS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {schedule.map((entry, index) => (
-            <tr key={index} className={entry.conflict ? 'conflict' : ''}>
-              <td>{entry.day}</td>
-              <td>{entry.startTime}</td>
-              <td>{entry.endTime}</td>
-              <td>{entry.course}</td>
-              <td>{entry.lecturer}</td>
-              <td>{entry.room}</td>
-              <td>{entry.class}</td>
-              <td>{entry.sks}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div>
-        <label>Pilih Kelas: </label>
-        <select onChange={handleClassChange}>
-          <option value="A">Kelas A</option>
-          <option value="B">Kelas B</option>
-          <option value="C">Kelas C</option>
-          {/* Tambahkan pilihan kelas lainnya */}
-        </select>
+      <div style={{ marginBottom: '16px' }}>
+        <Button onClick={handleOptimizeSchedule} type="primary" style={{ marginRight: '8px' }}>Optimalkan Seluruh Jadwal</Button>
+        <Button onClick={handleOptimizeConflictedSchedule} type="default" style={{ marginRight: '8px' }}>Optimalkan Jadwal Bentrok</Button>
       </div>
+
+      <Table
+        columns={columns}
+        dataSource={schedule.map((entry, index) => ({ ...entry, key: index }))}
+        rowClassName={(record) => (record.conflict ? 'conflict' : '')}
+      />
+      <Select defaultValue="A" style={{ width: 120 }} onChange={handleClassChange}>
+        <Option value="A">Kelas A</Option>
+        <Option value="B">Kelas B</Option>
+        <Option value="C">Kelas C</Option>
+        {/* Tambahkan pilihan kelas lainnya */}
+      </Select>
       <StudentScheduleTable schedule={schedule} selectedClass={selectedClass} />
     </div>
   );
